@@ -9,6 +9,11 @@ class Controller:
         # The parent widget (usually the main app's frame container)
         self.container = container
 
+        # Load environment variables
+        self.app_name = os.getenv("APP_NAME")
+        self.test_path = os.getenv("TEST_PROJECT")
+        self.default_theme = os.getenv("DEFAULT_THEME")
+
         # Stores all frames/pages by name
         self.frames = {}
 
