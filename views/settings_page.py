@@ -1,3 +1,5 @@
+# views/settings_page.py
+
 import tkinter as tk
 from views.themed_frame import ThemedFrame
 from views.theme_preview import ThemePreview
@@ -42,14 +44,16 @@ class SettingsPage(ThemedFrame):
         prefs_frame.pack(pady=20)
 
         # Language selector
-        tk.Label(prefs_frame, text="Language").pack()
+        self.lbl_language = tk.Label(prefs_frame, text="Language")
+        self.lbl_language.pack()
         lang_var = tk.StringVar(value=self.controller.shared_data["language"])
         tk.OptionMenu(
             prefs_frame, lang_var, "en", "jp", command=self.set_language
         ).pack(pady=5)
 
         # Font size selector
-        tk.Label(prefs_frame, text="Font Size").pack()
+        self.lbl_font = tk.Label(prefs_frame, text="Font Size")
+        self.lbl_font.pack()
         size_var = tk.StringVar(value=self.controller.shared_data["font_size"])
         tk.OptionMenu(
             prefs_frame, size_var,
@@ -58,7 +62,8 @@ class SettingsPage(ThemedFrame):
         ).pack(pady=5)
 
         # Color mode selector
-        tk.Label(prefs_frame, text="Color Mode").pack()
+        self.lbl_color = tk.Label(prefs_frame, text="Color Mode")
+        self.lbl_color.pack()
         mode_var = tk.StringVar(
             value=self.controller.shared_data["color_mode"])
         tk.OptionMenu(
@@ -69,24 +74,64 @@ class SettingsPage(ThemedFrame):
         ).pack(pady=5)
 
         # Back button
-        tk.Button(
+        self.btn_back = tk.Button(
             self,
             text="Back to Home",
             command=lambda: controller.show_frame("HomePage")
-        ).pack(pady=5)
+        )
+        self.btn_back.pack(pady=5)
 
-    def set_theme(self, theme_name):
-        self.controller.shared_data["theme"] = theme_name
-        self.controller.apply_theme()
+        # Reset to defaults
+        tk.Button(
+            prefs_frame,
+            text="Reset to Defaults",
+            command=self.reset_defaults
+        ).pack(pady=10)
 
+    # multilingual version:
     def set_language(self, lang):
         self.controller.shared_data["language"] = lang
+        self.controller.save_settings()
+
+        # Refresh ALL pages
+        for frame in self.controller.frames.values():
+            if hasattr(frame, "refresh_text"):
+                frame.refresh_text()
+
         self.controller.apply_theme()
 
     def set_font_size(self, size):
         self.controller.shared_data["font_size"] = size
+        self.controller.save_settings()
         self.controller.apply_theme()
 
     def set_color_mode(self, mode):
         self.controller.shared_data["color_mode"] = mode
+        self.controller.save_settings()
+        self.controller.apply_theme()
+
+    def set_theme(self, theme_name):
+        self.controller.shared_data["theme"] = theme_name
+        self.controller.save_settings()
+        self.controller.apply_theme()
+
+    def refresh_text(self):
+        self.label.config(text=self.controller.t("settings"))
+        self.lbl_language.config(text=self.controller.t("language"))
+        self.lbl_font.config(text=self.controller.t("font_size"))
+        self.lbl_color.config(text=self.controller.t("color_mode"))
+        self.btn_back.config(text=self.controller.t("back_home"))
+
+    def reset_defaults(self):
+        defaults = {
+            "theme": "light",
+            "current_page": None,
+            "language": "en",
+            "font_size": "medium",
+            "color_mode": "normal"
+        }
+
+        self.controller.shared_data.update(defaults)
+        self.controller.save_settings()
+        self.refresh_text()
         self.controller.apply_theme()

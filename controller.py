@@ -1,5 +1,9 @@
 # controller.py
 
+import json
+import os
+
+
 class Controller:
     def __init__(self, container):
         # The parent widget (usually the main app's frame container)
@@ -13,6 +17,7 @@ class Controller:
         # controller.shared_data["theme"] = "dark"
         # Example: controller.shared_data["username"] = "Chaminda"
 
+        # Default settings
         self.shared_data = {
             "theme": "light",        # default theme light/dark
             "current_page": None,    # will be set by show_frame()
@@ -20,6 +25,10 @@ class Controller:
             "font_size": "medium",   # small, medium, large
             "color_mode": "normal"   # normal, dark, highcontrast
         }
+
+        # Load saved settings
+        self.load_settings()
+
         # --- TRANSLATIONS ---
         self.translations = {
             "en": {
@@ -27,14 +36,31 @@ class Controller:
                 "settings": "Settings Page",
                 "about": "About This App",
                 "back_home": "Back to Home",
-                "version": "Version 1.0.0\nCreated by Chaminda"
+                "version": "Version 1.0.0\nCreated by Chaminda",
+
+                # NEW LABELS
+                "language": "Language",
+                "font_size": "Font Size",
+                "color_mode": "Color Mode",
+
+                "go_settings": "Go to Settings",
+                "go_about": "Go to About",
             },
+
             "jp": {
                 "home": "ホームページ",
                 "settings": "設定ページ",
                 "about": "このアプリについて",
                 "back_home": "ホームに戻る",
-                "version": "バージョン 1.0.0\nChaminda 作成"
+                "version": "バージョン 1.0.0\nChaminda 作成",
+
+                # NEW LABELS
+                "language": "言語",
+                "font_size": "文字サイズ",
+                "color_mode": "カラーモード",
+
+                "go_settings": "設定ページへ",
+                "go_about": "アプリ情報へ",
             }
         }
 
@@ -106,7 +132,6 @@ class Controller:
             "dark": "dark",
             "highcontrast": "highcontrast"
         }
-
         # Convert color mode → theme name
         self.shared_data["theme"] = color_mode_map[
             self.shared_data["color_mode"]
@@ -120,6 +145,15 @@ class Controller:
         current = self.frames[self.shared_data["current_page"]]
         current.apply_theme(theme)
 
-        # Apply theme to all frames
-        current = self.frames[self.shared_data["current_page"]]
-        current.apply_theme(theme)
+    # --- SETTINGS: LOAD ---
+    def load_settings(self):
+        if os.path.exists("settings.json"):
+            with open("settings.json", "r", encoding="utf-8") as f:
+                self.shared_data.update(json.load(f))
+        else:
+            self.save_settings()
+
+    # --- SETTINGS: SAVE ---
+    def save_settings(self):
+        with open("settings.json", "w", encoding="utf-8") as f:
+            json.dump(self.shared_data, f, indent=4)
