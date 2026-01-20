@@ -1,5 +1,7 @@
+# app.py
+
 import tkinter as tk
-from tkinter import ttk
+# from tkinter import ttk
 
 from controller import Controller
 from views.home_page import HomePage
@@ -12,22 +14,25 @@ class App(tk.Tk):
         super().__init__()
 
         self.title("Tkinter MVC App")
-        self.geometry("600x400")
+        self.geometry("800x600")
 
-        self.controller = Controller(self)
+        # Create the container frame (must be tk.Frame, not ttk.Frame)
+        self.container = tk.Frame(self)
+        self.container.pack(fill="both", expand=True)
 
-        container = ttk.Frame(self)
-        container.pack(fill="both", expand=True)
+        self.container.rowconfigure(0, weight=1)
+        self.container.columnconfigure(0, weight=1)
 
-        container.rowconfigure(0, weight=1)
-        container.columnconfigure(0, weight=1)
+        # Create the controller with the container
+        self.controller = Controller(self.container)
 
-        pages = (HomePage, SettingsPage, AboutPage)
+        self._load_frames()
 
-        for PageClass in pages:
-            frame = PageClass(container, self.controller)
-            name = PageClass.__name__
-            self.controller.register_frame(name, frame)
+    def _load_frames(self):
+        for FrameClass in (HomePage, SettingsPage, AboutPage):
+            frame = FrameClass(
+                parent=self.container, controller=self.controller)
+            self.controller.register_frame(FrameClass.__name__, frame)
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.controller.show_frame("HomePage")

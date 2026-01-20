@@ -1,21 +1,29 @@
-from tkinter import ttk
-from .base_frame import BaseFrame
+# views/home_page.py
+
+import tkinter as tk
+from views.themed_frame import ThemedFrame
 
 
-class HomePage(BaseFrame):
+class HomePage(ThemedFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        ttk.Label(self, text="Home Page", font=("Arial", 20)).pack(pady=20)
+        self.label = tk.Label(
+            self, text="Home Page", font=("Arial", 20))
+        self.label.pack(pady=20)
 
-        ttk.Button(
+        # First button
+        self.btn_settings = tk.Button(
             self,
             text="Go to Settings",
             command=lambda: controller.show_frame("SettingsPage")
-        ).pack(pady=5)
+        )
+        self.btn_settings.pack(pady=5)
 
-        ttk.Button(
+        # Second button
+        self.btn_about = tk.Button(
             self,
             text="Go to About",
             command=lambda: controller.show_frame("AboutPage")
-        ).pack(pady=5)
+        )
+        self.btn_about.pack(pady=5)
