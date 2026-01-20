@@ -125,7 +125,7 @@ class SettingsPage(ThemedFrame):
     def reset_defaults(self):
         defaults = {
             "theme": "light",
-            "current_page": None,
+            "current_page": "SettingsPage",
             "language": "en",
             "font_size": "medium",
             "color_mode": "normal"

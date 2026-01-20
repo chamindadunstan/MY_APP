@@ -45,6 +45,8 @@ class Controller:
 
                 "go_settings": "Go to Settings",
                 "go_about": "Go to About",
+                # about page
+                "about_desc": "This is a Tkinter MVC demo with theming."
             },
 
             "jp": {
@@ -61,6 +63,8 @@ class Controller:
 
                 "go_settings": "設定ページへ",
                 "go_about": "アプリ情報へ",
+                # about page
+                "about_desc": "これはテーマ付きの Tkinter MVC デモです。"
             }
         }
 
@@ -126,6 +130,11 @@ class Controller:
         return self.translations[lang][key]
 
     def apply_theme(self):
+        # SAFETY CHECK — prevents KeyError when current_page is None
+        page = self.shared_data.get("current_page")
+        if not page or page not in self.frames:
+            return
+
         # --- COLOR MODE SUPPORT ---
         color_mode_map = {
             "normal": "light",

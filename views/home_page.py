@@ -9,7 +9,10 @@ class HomePage(ThemedFrame):
         super().__init__(parent, controller)
 
         self.label = tk.Label(
-            self, text=self.controller.t("home"), font=("Arial", 20))
+            self,
+            text=self.controller.t("home"),
+            font=("Arial", 20)
+        )
         self.label.pack(pady=20)
 
         # First button
@@ -27,3 +30,8 @@ class HomePage(ThemedFrame):
             command=lambda: controller.show_frame("AboutPage")
         )
         self.btn_about.pack(pady=5)
+
+    def refresh_text(self):
+        self.label.config(text=self.controller.t("home"))
+        self.btn_settings.config(text=self.controller.t("go_settings"))
+        self.btn_about.config(text=self.controller.t("go_about"))
