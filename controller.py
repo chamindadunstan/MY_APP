@@ -13,6 +13,17 @@ class Controller:
         self.app_name = os.getenv("APP_NAME")
         self.test_path = os.getenv("TEST_PROJECT")
         self.default_theme = os.getenv("DEFAULT_THEME")
+        self.app_env = os.getenv("APP_ENV")
+        self.debug_mode = os.getenv("DEBUG")
+        self.default_language = os.getenv("DEFAULT_LANGUAGE")
+        self.default_font_size = os.getenv("DEFAULT_FONT_SIZE")
+        self.default_color_mode = os.getenv("DEFAULT_COLOR_MODE")
+        self.project_root = os.getenv("PROJECT_ROOT")
+        self.vscode_path = os.getenv("VSCODE_PATH")
+        self.python_path = os.getenv("PYTHON_PATH")
+
+        # Validate environment variables
+        self.validate_env()
 
         # Stores all frames/pages by name
         self.frames = {}
@@ -101,6 +112,38 @@ class Controller:
                 "button_bg": "#333333"
             }
         }
+
+    # Validate environment variables
+    def validate_env(self):
+        """Check required environment
+        variables and warn if any are missing."""
+        required_vars = [
+            "APP_NAME",
+            "APP_ENV",
+            "DEBUG",
+            "DEFAULT_THEME",
+            "DEFAULT_LANGUAGE",
+            "DEFAULT_FONT_SIZE",
+            "DEFAULT_COLOR_MODE",
+            "PROJECT_ROOT",
+            "TEST_PROJECT",
+            "VSCODE_PATH",
+            "PYTHON_PATH"
+        ]
+
+        missing = [var for var in required_vars if os.getenv(var) is None]
+
+        if missing:
+            print("\n[ENV VALIDATION WARNING]")
+            print("The following environment variables are missing:")
+            for var in missing:
+                print(f"  - {var}")
+            print("Please update your .env file.\n")
+        else:
+            print(
+                "[ENV VALIDATION] All environment variables loaded "
+                "successfully."
+            )
 
     def register_frame(self, name, frame):
         """
