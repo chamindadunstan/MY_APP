@@ -20,6 +20,13 @@ class ThemedFrame(tk.Frame):
         Recursively apply theme to all widgets inside this frame.
         """
         for child in widget.winfo_children():
+            # --- FONT SIZE SUPPORT ---
+            font_scale = {
+                "small": 10,
+                "medium": 12,
+                "large": 14
+            }
+            size = font_scale[self.controller.shared_data["font_size"]]
 
             # Frame-like widgets
             if isinstance(child, (tk.Frame, tk.LabelFrame)):
@@ -27,7 +34,11 @@ class ThemedFrame(tk.Frame):
 
             # Labels
             elif isinstance(child, tk.Label):
-                child.configure(bg=theme["bg"], fg=theme["fg"])
+                child.configure(
+                    bg=theme["bg"],
+                    fg=theme["fg"],
+                    font=("Arial", size)
+                )
 
             # Buttons
             elif isinstance(child, tk.Button):
@@ -35,7 +46,8 @@ class ThemedFrame(tk.Frame):
                     bg=theme["button_bg"],
                     fg=theme["fg"],
                     activebackground=theme["button_bg"],
-                    activeforeground=theme["fg"]
+                    activeforeground=theme["fg"],
+                    font=("Arial", size)
                 )
 
             # Entry fields
@@ -43,7 +55,8 @@ class ThemedFrame(tk.Frame):
                 child.configure(
                     bg=theme["bg"],
                     fg=theme["fg"],
-                    insertbackground=theme["fg"]
+                    insertbackground=theme["fg"],
+                    font=("Arial", size)
                 )
 
             # Text widgets
@@ -51,7 +64,8 @@ class ThemedFrame(tk.Frame):
                 child.configure(
                     bg=theme["bg"],
                     fg=theme["fg"],
-                    insertbackground=theme["fg"]
+                    insertbackground=theme["fg"],
+                    font=("Arial", size)
                 )
 
             # Recursively theme children of this widget

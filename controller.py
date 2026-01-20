@@ -12,10 +12,32 @@ class Controller:
         # Example usage:
         # controller.shared_data["theme"] = "dark"
         # Example: controller.shared_data["username"] = "Chaminda"
+
         self.shared_data = {
-            "theme": "light"   # default theme light/dark
-            "current_page: None"
+            "theme": "light",        # default theme light/dark
+            "current_page": None,    # will be set by show_frame()
+            "language": "en",        # en, jp, etc.
+            "font_size": "medium",   # small, medium, large
+            "color_mode": "normal"   # normal, dark, highcontrast
         }
+        # --- TRANSLATIONS ---
+        self.translations = {
+            "en": {
+                "home": "Home Page",
+                "settings": "Settings Page",
+                "about": "About This App",
+                "back_home": "Back to Home",
+                "version": "Version 1.0.0\nCreated by Chaminda"
+            },
+            "jp": {
+                "home": "ホームページ",
+                "settings": "設定ページ",
+                "about": "このアプリについて",
+                "back_home": "ホームに戻る",
+                "version": "バージョン 1.0.0\nChaminda 作成"
+            }
+        }
+
         # Theme definitions (light and dark)
         self.themes = {
             "light": {
@@ -72,9 +94,31 @@ class Controller:
         """
         return self.frames.get(name)
 
+    # --- TRANSLATION HELPER ---
+    def t(self, key):
+        lang = self.shared_data["language"]
+        return self.translations[lang][key]
+
     def apply_theme(self):
+        # --- COLOR MODE SUPPORT ---
+        color_mode_map = {
+            "normal": "light",
+            "dark": "dark",
+            "highcontrast": "highcontrast"
+        }
+
+        # Convert color mode → theme name
+        self.shared_data["theme"] = color_mode_map[
+            self.shared_data["color_mode"]
+        ]
+
+        # Now load the theme
         theme_name = self.shared_data["theme"]
         theme = self.themes[theme_name]
+
+        # Apply theme only to the current page
+        current = self.frames[self.shared_data["current_page"]]
+        current.apply_theme(theme)
 
         # Apply theme to all frames
         current = self.frames[self.shared_data["current_page"]]
